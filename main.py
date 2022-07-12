@@ -1,3 +1,16 @@
+"""
+
+Nerve Stimulator Tracker by Kyle Marden
+
+Enter and store device settings (program & strength) and pain level for each hour of each day and generate statistics such as average pain 
+level. Each month is persisted in a pickled shelve dictionary with the date as the key and a Day class object as the value. Each hour's record
+is represented by a separate Hour object stored within the Day object.
+Includes a simple command-line input menu to create a new file, update existing an file, display current data, and see statistics for each day.
+This will be expanded to analysing the relationship between settings and pain levels over weeks or months. Example existing data is included called
+'july-data'. Enter this as the file path when prompted to access this data. This will be changed to generate file path from user entering a month.
+
+"""
+
 from os.path import exists
 import shelve
 from datetime import date
@@ -134,8 +147,10 @@ def add_hr_to_day(day):
 
 # User menus
 
-def select_month():
-
+def select_month_year():
+	"""Not implemented yet, but will validate a month and year entry, which will be used to create a file
+	path in outer functions. """
+	
 	month, year = [x for x in input('Enter month and year (sep by space)\n-> ').split()]
 	month = month.title()
 	assert month in ['January', 'February', 'March', 'April', 'May', 'June', 'July', 
@@ -169,7 +184,7 @@ def day_menu(file_path, day, date):
 			print_day(day)
 		elif select == 2:
 			day = add_hr_to_day(day)  # get edited day object
-			edit_file(file_path, date, day)  # replace current obj with this date key
+			edit_file(file_path, date, day)  # replace current day object with updated one
 		elif select == 3:
 			print_pain_stats(day.pain_stats())
 		elif select == 4:
@@ -199,7 +214,7 @@ Welcome Kyle.
 				# expand to access year and month directories later
 				# look up how to create file paths
 				
-				file_path = input('Enter file name\n-> ')
+				file_path = input('Enter file name\n-> ')  # temporarily enter just the file path
 				try:
 					data = open_file(file_path)  # return dict of month's shelve file
 					date_ = select_date(data)  # return date key to access
@@ -208,7 +223,7 @@ Welcome Kyle.
 				else:
 					day = data[date_]  # return the Day object matching the date key
 					day_menu(file_path, day, date_)  # edit Day object and then replace old one in file
-					# WARNING: this exits entire program, want to go back to menu loop
+					# WARNING: this exits entire program, need to fix to stay in the menu loop
 					break
 
 		if select == 2:
