@@ -1,7 +1,5 @@
 """
 
-Nerve Stimulator Tracker 2.0
-
 Classes to represent days and hours of date, pain level and device settings.
 Object methods encapsulated within classes to return data and perform simple calculations for an hour or day.
 
@@ -19,6 +17,7 @@ class Hour:
 	A program value of 0 indicates the device is off.
 	A pain value of 0 indicates I am asleep.
 	"""
+
 	# maybe can take out init function, has no attributes when created
 	def __init__(self):
 		"""Initialise empty hour."""
@@ -112,6 +111,7 @@ class Day:
 		all_settings = [x.settings for x in self.hours.values()]
 		all_progs = [x.settings.program for x in self.hours.values()]
 
+		# needs work to represent the named tuples and counts more readably
 		return {
 			'settings': set(all_settings),  # set of named tuples
 			'programs': set(all_progs),  # set of ints
@@ -119,8 +119,8 @@ class Day:
 			'program counts': Counter(all_progs)  # Counter obj for program ints
 		}
 
-	def __repr__(self):
-		return f'Day {self.date.day}/{self.date.month}/{self.date.year}. Hrs filled: /24'
+	def __repr__(self):  # add day of the week here
+		return f'Day {self.date.day}/{self.date.month}/{self.date.year}'
 
 def make_time(hour_ind):
 	"""Convert the hour index number into 24hr time period string."""
@@ -131,9 +131,3 @@ def make_time(hour_ind):
 		time_str = f'{hour_ind}00 - {hour_ind + 1}00'
 	
 	return time_str
-
-# TO DO:
-# adapt the settings and pain stats functions from old module
-# fix hour count in Day __repr__
-# implement functions to analyse over multiple days
-
