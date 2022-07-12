@@ -1,0 +1,139 @@
+"""
+
+Nerve Stimulator Tracker 2.0
+
+Classes to represent days and hours of date, pain level and device settings.
+Object methods encapsulated within classes to return data and perform simple calculations for an hour or day.
+
+"""
+
+from datetime import date
+from collections import namedtuple, Counter
+
+# named tuple for easier referencing
+Settings = namedtuple('Settings', 'program strength')
+
+class Hour:
+	"""
+	Represents a single hour time period's noted stats.
+	A program value of 0 indicates the device is off.
+	A pain value of 0 indicates I am asleep.
+	"""
+	# maybe can take out init function, has no attributes when created
+	def __init__(self):
+		"""Initialise empty hour."""
+		self.settings = None
+		self.pain = None
+
+	def get_settings(self):
+		"""Return the named tuple of program and strength levels."""
+		return self.settings
+
+	def get_pain(self):
+		"""Return integer pain value."""
+		return self.pain
+
+	def set_stats(self, program, strength, pain):
+		"""Set stats for this hour."""
+
+		# catch AssertionError in main program and print the message
+		assert program >= 0 and program <= 5, 'Program value must be between 0 and 5.'
+		assert strength >= 0 and strength <= 14, 'Strength value must be between 0 and 14.'
+		assert pain >= 0 and pain <= 10, 'Pain value must be between 1 and 10.'
+		
+		self.settings = Settings(program, strength)
+		self.pain = pain
+
+	def __str__(self):
+		"""Different str reps for empty or filled in objects."""
+		
+		if self.settings is not None:
+			prog_str = 'DEVICE OFF' if self.settings.program == 0 else f'Program: {self.settings.program}'
+			stren_str = '' if self.settings.strength == 0 else f'Strength: {self.settings.strength}'
+			pain_str = 'ASLEEP' if self.pain == 0 else f'Pain: {self.pain}'
+			return f'{prog_str} {stren_str} | {pain_str}'
+		else:
+			return 'No record'
+
+class Day:
+	"""Represents a single day composed of a datetime object and 24 hour objects."""
+	
+	def __init__(self, date_):
+		self.date = date_  # datetime object
+
+		# generate dict with 0-23 as keys each with a value of empty Hour object
+		self.hours = dict(zip([x for x in range(0,24)], [Hour() for x in range(0, 24)]))
+
+	def get_date(self):
+		"""Return datetime object."""
+		return self.date
+
+	def get_all_hours(self):
+		"""Return dictionary of hour ids and hour objects."""
+		return self.hours
+
+	def get_hour(self, hr_id):
+		"""Return the hour object at the specified key."""
+		return self.hours(hr_id)
+
+	# refactor from old classes file
+	def get_pain_stats(self):
+		"""Return the min, max and avg pain level and how many horus awake/asleep today."""
+		pass
+
+	def get_settings_stats(self):
+		"""Return different settings used today and how many hours each was on."""
+		pass
+
+	def add_hour(self, hour, program, strength, pain):
+		"""Fill empty hour record or replace existing. This is better I think."""
+		self.hours[hour].set_stats(program, strength, pain)
+
+	def pain_stats(self):
+		"""Return dict of min, max, avg pain and hours asleep/awake."""
+
+		if len(self.hours) != 24:
+			print(f'NOTE: only {len(self.hours)} hours found for the day.')
+
+		awake_hrs = [x.pain for x in self.hours.values() if x.pain != 0]
+		asleep_hrs = [x.pain for x in self.hours.values() if x.pain == 0]
+
+		return {
+			'hours awake': len(awake_hrs),
+			'hours asleep': len(asleep_hrs),
+			'min pain': min(awake_hrs),
+			'max pain': max(awake_hrs),
+			'average pain': sum(awake_hrs) / len(awake_hrs)
+		}
+
+	def program_stats(self):
+		"""Return dict containing info about programs used today and how many hours they were on."""
+
+		all_settings = [x.settings for x in self.hours.values()]
+		all_progs = [x.settings.program for x in self.hours.values()]
+
+		return {
+			'settings': set(all_settings),  # set of named tuples
+			'programs': set(all_progs),  # set of ints
+			'setting counts': Counter(all_settings),  # Counter obj for settings named tuples
+			'program counts': Counter(all_progs)  # Counter obj for program ints
+		}
+
+	def __repr__(self):
+		return f'Day {self.date.day}/{self.date.month}/{self.date.year}. Hrs filled: /24'
+
+def make_time(hour_ind):
+	"""Convert the hour index number into 24hr time period string."""
+	# NOTE: need to account for index 9 which is 0900 - 1000, 1 digit then 2 digit
+	if len(str(hour_ind)) == 1:
+		time_str = f'0{hour_ind}00 - 0{hour_ind + 1}00'
+	else:
+		time_str = f'{hour_ind}00 - {hour_ind + 1}00'
+	
+	return time_str
+
+# TO DO:
+# adapt the settings and pain stats functions from old module
+# fix hour count in Day __repr__
+# implement functions to analyse over multiple days
+
