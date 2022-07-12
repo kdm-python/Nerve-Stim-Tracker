@@ -1,8 +1,5 @@
 """
-
-Classes to represent days and hours of date, pain level and device settings.
-Object methods encapsulated within classes to return data and perform simple calculations for an hour or day.
-
+Classes for the nerve stimulator app to represent days and hours of date, pain level and device settings.
 """
 
 from datetime import date
@@ -15,10 +12,10 @@ class Hour:
 	"""
 	Represents a single hour time period's noted stats.
 	A program value of 0 indicates the device is off.
-	A pain value of 0 indicates I am asleep.
+	A pain value of 0 indicates patient is asleep.
 	"""
 
-	# maybe can take out init function, has no attributes when created
+	# maybe can take out init function, always created without these attributes anyway
 	def __init__(self):
 		"""Initialise empty hour."""
 		self.settings = None
@@ -35,7 +32,7 @@ class Hour:
 	def set_stats(self, program, strength, pain):
 		"""Set stats for this hour."""
 
-		# catch AssertionError in main program and print the message
+		# catch AssertionError in main program and print the corresponding message
 		assert program >= 0 and program <= 5, 'Program value must be between 0 and 5.'
 		assert strength >= 0 and strength <= 14, 'Strength value must be between 0 and 14.'
 		assert pain >= 0 and pain <= 10, 'Pain value must be between 1 and 10.'
@@ -74,15 +71,6 @@ class Day:
 	def get_hour(self, hr_id):
 		"""Return the hour object at the specified key."""
 		return self.hours(hr_id)
-
-	# refactor from old classes file
-	def get_pain_stats(self):
-		"""Return the min, max and avg pain level and how many horus awake/asleep today."""
-		pass
-
-	def get_settings_stats(self):
-		"""Return different settings used today and how many hours each was on."""
-		pass
 
 	def add_hour(self, hour, program, strength, pain):
 		"""Fill empty hour record or replace existing. This is better I think."""
