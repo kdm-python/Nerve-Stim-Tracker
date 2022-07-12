@@ -112,6 +112,8 @@ class Day:
 
 def make_time(hour_ind):
 	"""Convert the hour index number into 24hr time period string."""
+	
+	# not implemented yet, need to replace hour index with the time period when printing a day/hour
 	# NOTE: need to account for index 9 which is 0900 - 1000, 1 digit then 2 digit
 	if len(str(hour_ind)) == 1:
 		time_str = f'0{hour_ind}00 - 0{hour_ind + 1}00'
