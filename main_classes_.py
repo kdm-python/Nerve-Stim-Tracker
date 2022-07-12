@@ -41,7 +41,7 @@ class Hour:
 		self.pain = pain
 
 	def __str__(self):
-		"""Different str reps for empty or filled in objects."""
+		"""Different str reps depending on whether the device is off or patient is asleep."""
 		
 		if self.settings is not None:
 			prog_str = 'DEVICE OFF' if self.settings.program == 0 else f'Program: {self.settings.program}'
@@ -52,7 +52,10 @@ class Hour:
 			return 'No record'
 
 class Day:
-	"""Represents a single day composed of a datetime object and 24 hour objects."""
+	"""
+	Represents a single day composed of a datetime object and 24 hour objects.
+	Hour indexes work like this: 0 = 0000-0100, 14 = 1400-1500 and so forth.
+	"""
 	
 	def __init__(self, date_):
 		self.date = date_  # datetime object
